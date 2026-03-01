@@ -18,4 +18,14 @@ database.exec(`
     )
 `);
 
+database.exec(`
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        schedule TEXT NOT NULL,
+        name TEXT,
+        time_start TIMESTAMP,
+        time_end TIMESTAMP
+    )
+`);
+
 console.log("Created database successfully!")

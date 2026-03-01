@@ -29,5 +29,5 @@ export async function POST(context: APIContext) {
     const uuid = uuidv7();
 
     database.prepare('INSERT INTO schedules (id, owner, name, public) VALUES (?, ?, ?, ?)').run(uuid, user, name, isPublic);
-    return context.redirect(`/schedule/${uuid}/manage`);
+    return context.redirect(`/schedule/${uuid}`);
 }

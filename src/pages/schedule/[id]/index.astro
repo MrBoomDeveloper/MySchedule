@@ -1,12 +1,73 @@
 ---
 import Button from "@/components/Button.astro";
+import database from "@/database";
+import { getUsernameByToken } from "@/utils";
 
 export const prerender = false;
 
 const id = Astro.params.id;
+const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
+const isLoggedIn = user != null;
 
-if(id != "1") {
+const schedule = database.prepare('SELECT * FROM schedules WHERE id = ?').get(id);
+const currentDayOfWeek = new Date().getDay() - 1;
+const canEdit = schedule.owner == user;
+
+if(schedule == null || (schedule.isPublic == "false" && !canEdit)) {
     return Astro.redirect("/404", 404);
+}
+
+const tasks = database.prepare('SELECT * FROM tasks WHERE schedule = ?').all(id);
+
+const dayOfWeekNames = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+];
+
+function getFormattedWeekRange() {
+    const now = new Date();
+    
+    // 1. Get the current day (0 for Sun, 1 for Mon, ..., 6 for Sat)
+    const dayOfWeek = now.getDay(); 
+  
+    // 2. Adjust so Monday is the first day (offset calculation)
+    // If today is Sunday (0), we go back 6 days. Otherwise, go back (day - 1)
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday);
+  
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    // 3. Formatting Helpers
+    const formatMonth = (date: Date) => date.toLocaleString('default', { month: 'long' });
+    const formatYear = (date: Date) => date.getFullYear();
+  
+    const mDay = monday.getDate();
+    const mMonth = formatMonth(monday);
+    const mYear = formatYear(monday);
+  
+    const sDay = sunday.getDate();
+    const sMonth = formatMonth(sunday);
+    const sYear = formatYear(sunday);
+
+    // 4. Logic for different scenarios
+    if(mYear !== sYear) {
+        // Different Years: "December 29, 2025 - January 4, 2026"
+        return `${mMonth} ${mDay}, ${mYear} - ${sMonth} ${sDay}, ${sYear}`;
+    } else if (mMonth !== sMonth) {
+        // Different Months: "January 31 - February 6"
+        return `${mMonth} ${mDay} - ${sMonth} ${sDay}`;
+    } else {
+        // Same Month: "January 1-7"
+        return `${mMonth} ${mDay}-${sDay}`;
+    }
 }
 ---
 
@@ -23,14 +84,58 @@ if(id != "1") {
 
     <body>
         <header>
-            <span class="title">{id}</span>
+            {canEdit && <a href="/dashboard">
+                <img class="back" src="/icons/back_bold.svg" />
+            </a>}
+
+            <span class="title">{schedule.name}</span>
 
             <span class="spacer"></span>
 
-            <a href="/api/auth/logout">
-                <Button text="Log out" />
-            </a>
+            {!isLoggedIn && <a href="/auth/signin">
+                <Button text="Sign in" />
+            </a>}
+
+            {schedule.public == "true" && <Button icon="/icons/link.svg" text="Share" id="share" />}
+
+            {canEdit && <a href={`/schedule/${schedule.id}/manage`}>
+                <Button icon="/icons/settings.svg" text="Manage" />
+            </a>}
         </header>
+
+        <div class="actions">
+            <Button squircle icon="/icons/back.svg" />
+            <span class="week">{getFormattedWeekRange()}</span>
+
+            <div style="scale: -1">
+                <Button squircle icon="/icons/back.svg" />
+            </div>
+
+            <span class="spacer"></span>
+
+            <a href={`/schedule/${schedule.id}/month`}>
+                <Button squircle icon="/icons/calendar_month_filled.svg" />
+            </a>
+        </div>
+
+        <div class="days">
+            {[0, 1, 2, 3, 4, 5, 6].map(index => (
+                <div class="day" class:list={{active: index == currentDayOfWeek}}>
+                    <div class="day-header">
+                        <span class="day-name">{dayOfWeekNames[index]}</span>
+                        {canEdit && <Button transparent icon="/icons/add.svg" />}
+                    </div>
+
+                    {[0, 1, 2, 3, 4, 5, 6].map(index => (
+                        <div class="task">
+                            <span class="task-time">8:00-9:35</span>
+                            <span class="task-name">Таска  {index}</span>
+                            <span class="task-duration">1 час</span>
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
     </body>
 </html>
 
@@ -38,19 +143,113 @@ if(id != "1") {
     @use "@/styles/reset";
     @use "@/styles/colors";
 
+    .spacer {
+        flex-grow: 1;
+    }
+
     header {
         padding: 1rem;
         display: flex;
         align-items: center;
-        
-        .spacer {
-            flex-grow: 1;
+        gap: .8rem;
+
+        .back {
+            height: 1.8em;
+            aspect-ratio: 1;
+        }
+
+        .title {
+            font-weight: 900;
+		    font-size: 2em;
+		    font-variation-settings: "wdth" 125;
         }
     }
 
-    .title {
-        font-weight: 900;
-		font-size: 2em;
-		font-variation-settings: "wdth" 125;
+    .actions {
+        padding: 1rem;
+        display: flex;
+        gap: 1.75rem;
+
+        .week {
+            font-weight: 900;
+		    font-size: 1.75em;
+		    font-variation-settings: "wdth" 125;
+            font-style: italic;
+        }
+    }
+
+    .days {
+        padding: 1rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .task {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        background-color: white;
+        color: black;
+        padding-block: .6rem;
+        padding-inline: 1rem;
+
+        .task-time {
+            font-size: .95em;
+        }
+
+        .task-name {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .task-duration {
+            margin-top: .1rem;
+            font-size: .9em;
+        }
+
+        &:last-child {
+            border-radius: 0 0 .75rem .75rem;
+        }
+    }
+
+    .day {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        width: 0;
+        gap: .25rem;
+
+        &:not(.active) {
+            opacity: .8;
+
+            .task {
+                background-color: transparent;
+                color: white;
+                border: .1em white solid;
+            }
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .day-name {
+            font-weight: 600;
+		    font-size: 1.2em;
+            margin-bottom: .6rem;
+        }
+    }
+
+    .day-header + .task {
+        border-radius: .75rem .75rem 0 0;
     }
 </style>
+
+<script>
+    document.getElementById("share")?.addEventListener("click", () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Copied to clipboard!");
+    });
+</script>

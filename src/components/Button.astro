@@ -2,20 +2,24 @@
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"button"> {
-    text: string,
+    text?: string,
 	icon?: string,
-	outlined?: boolean
+	outlined?: boolean,
+	squircle?: boolean,
+	transparent?: boolean
 }
 
 const {
 	text,
 	icon,
+	squircle,
 	outlined,
+	transparent,
 	...attrs 
 } = Astro.props;
 ---
 
-<button class:list={{ outlined }} {...attrs}>
+<button class:list={{ outlined, squircle, transparent, "no-text": text == null }} {...attrs}>
 	{icon && <img src={icon} class="icon" />}
 	{text}
 </button>
@@ -36,16 +40,33 @@ const {
 		justify-content: center;
 		gap: .8em;
 
+		&.squircle {
+			border-radius: .5em;
+		}
+
+		&.no-text {
+			padding-inline: .75em;
+		}
+
 		.icon {
 			height: 1em;
 			aspect-ratio: 1;
 			scale: 1.2;
 		}
 
+		&:not(.no-text) .icon {
+			margin-left: -.4em;
+		}
+
 		&.outlined {
 			background-color: transparent;
 			color: black;
 			border: .15em black solid;
+		}
+
+		&.transparent {
+			background-color: transparent;
+			color: black;
 		}
 
 		&:active:hover {
@@ -63,9 +84,20 @@ const {
 			}
 
 			&.outlined {
-				background-color: transparent;
 				color: #ffffff !important;
 				border: .15em #ffffff solid;
+
+				.icon {
+					filter: brightness(0) saturate(100%) invert(88%) sepia(86%) saturate(0%) hue-rotate(202deg) brightness(104%) contrast(102%);
+				}
+			}
+
+			&.transparent {
+				color: #ffffff !important;
+				
+				.icon {
+					filter: brightness(0) saturate(100%) invert(88%) sepia(86%) saturate(0%) hue-rotate(202deg) brightness(104%) contrast(102%);
+				}
 			}
 		}
 	}

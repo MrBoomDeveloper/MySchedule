@@ -48,7 +48,7 @@ const schedules = database.prepare('SELECT * FROM schedules WHERE owner = ?').al
 
         <div class="schedules">
             {schedules.map(schedule => (
-                <a href={`/schedule/${schedule.id}/manage`}>
+                <a href={`/schedule/${schedule.id}`}>
                     <div class="schedule">
                         <span class="name">{schedule.name}</span>
 
