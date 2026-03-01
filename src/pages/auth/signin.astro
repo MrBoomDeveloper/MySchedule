@@ -1,0 +1,21 @@
+---
+import Button from "@/components/Button.astro";
+---
+
+<form action="/api/auth/signin" method="post">
+    <input id="username" name="username" placeholder="Username" />
+    <input id="password" name="password" type="password" placeholder="Password" />
+
+    <Button type="submit" text="Sign in" />
+</form>
+
+<style lang="scss">
+    @use "@/styles/reset";
+
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 15rem;
+        gap: .8rem;
+    }
+</style>

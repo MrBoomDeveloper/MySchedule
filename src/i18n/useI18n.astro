@@ -1,0 +1,17 @@
+---
+export const prerender = false;
+import translations from "@/i18n/translations.json";
+
+export type I18nKey = keyof typeof translations.en;
+type I18nLanguage = keyof typeof translations;
+
+// TODO: Fix this shit, because it only selects english
+export function useI18n(): Record<I18nKey, string> {
+    const locale = JSON.stringify(Astro.preferredLocale) as I18nLanguage;
+
+    return {
+        ...translations["en"], 
+        ...translations[locale]
+    }
+}
+---

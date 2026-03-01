@@ -1,0 +1,12 @@
+{
+    "en": {
+        "signup": "Sign up",
+        "signin": "Sign in",
+        "landing_title": "A brand new way to share your schedule with others :)"
+    },
+
+    "ru": {
+        "signup": "Зарегистрироваться",
+        "signin": "Войти"
+    }
+}

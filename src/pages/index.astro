@@ -1,6 +1,10 @@
 ---
-export const prerender = false;
-const registrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+import Button from "@/components/Button.astro";
+import { useI18n } from "@/i18n/useI18n.astro";
+
+const i18n = useI18n();
+const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+const isLoggedIn = Astro.cookies.get("auth") != null;
 ---
 
 <html lang="en">
@@ -13,17 +17,57 @@ const registrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
 	</head>
 	<body>
 		<header>
-			<a href="/auth/login">
-				<button>Login</button>
+			<a href="/">
+				<span class="logo">MySchedule</span>
 			</a>
+
+			<span class="spacer"></span>
 			
-			{registrationEnabled && <a href="/auth/signup">
-				<button>Sign up</button>
+			{!isLoggedIn && <a href="/auth/signin">
+				<Button class="signin-button" text={i18n.signin} />
+			</a>}
+			
+			{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
+				<Button text={i18n.signup} />
+			</a>}
+
+			{isLoggedIn && <a href="/dashboard">
+				<Button text="Dashboard" />
 			</a>}
 		</header>
 
-		<h1>MySchedule</h1>
-		<p>A brand new way to share your schedule with others :)</p>
-		<a href="https://mrboomdev.ru">Learn more...</a>
+		<h1 style="margin-bottom: .6rem">{i18n.landing_title}</h1>
+
+		<a href="https://github.com/MrBoomDeveloper/MySchedule">
+			<Button text = "Learn more..." />
+		</a>
 	</body>
 </html>
+
+<style lang="scss">
+	@use "@/styles/reset";
+
+	header {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		padding: 1rem;
+		gap: .6em;
+		font-size: 1em;
+
+		.logo {
+			font-weight: 900;
+			font-size: 2em;
+		}
+
+		.spacer {
+			flex-grow: 1;
+		}
+
+		.signin-button {
+			background-color: transparent;
+			color: black;
+			border: .15em black solid;
+		}
+	}
+</style>

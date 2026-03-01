@@ -1,0 +1,27 @@
+---
+import Button from "@/components/Button.astro";
+
+const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+
+if(!isRegistrationEnabled) {
+    return Astro.redirect("/")
+}
+---
+
+<form action="/api/auth/signup" method="post">
+    <input placeholder="Username" />
+    <input placeholder="Password" />
+
+    <Button type="submit" text="Sign up" />
+</form>
+
+<style lang="scss">
+    @use "@/styles/reset";
+
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 15rem;
+        gap: .8rem;
+    }
+</style>
