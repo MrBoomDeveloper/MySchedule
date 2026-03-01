@@ -1,11 +1,13 @@
 ---
 import Button from "@/components/Button.astro";
 import TextInput from "@/components/TextInput.astro";
+import Toggle from "@/components/Toggle.astro";
+import { getUsernameByToken } from "@/utils";
 
-const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
 
-if(!isRegistrationEnabled) {
-    return Astro.redirect("/")
+if(user == null) {
+    return Astro.redirect("/auth/signin");
 }
 ---
 
@@ -17,21 +19,20 @@ if(!isRegistrationEnabled) {
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
 		<meta name="darkreader-lock" />
-		<title>MySchedule - Sign up</title>
+		<title>MySchedule - Create a new schedule</title>
     </head>
 
     <body>
-        <h1>MySchedule</h1>
+        <h1>New schedule</h1>
 
-        <form action="/api/auth/signup" method="post">
-            <TextInput name="username" placeholder="Username" autofocus required />
-            <TextInput name="email" type="email" placeholder="Email" required />
-            <TextInput name="password" type="password" placeholder="Password" required />
+        <form action="/api/schedule/create" method="post">
+            <TextInput id="name" name="name" placeholder="Name" autofocus required />
+            <Toggle id="public" name="public" text="Public access (via link)" style="width: 100%; padding-block: .6rem" />
 
-            <Button class="action" type="submit" text="Sign up" />
+            <Button class="action" type="submit" text="Create" />
         </form>
 
-        <a href="/auth/signin" class="hint">Already have account?</a>
+        <a href="/dashboard" class="hint">Cancel</a>
     </body>
 </html>
 

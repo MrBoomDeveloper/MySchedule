@@ -2,13 +2,23 @@
 import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"button"> {
-    text: string
+    text: string,
+	icon?: string,
+	outlined?: boolean
 }
 
-const { text, ...attrs } = Astro.props;
+const {
+	text,
+	icon,
+	outlined,
+	...attrs 
+} = Astro.props;
 ---
 
-<button {...attrs}>{text}</button>
+<button class:list={{ outlined }} {...attrs}>
+	{icon && <img src={icon} class="icon" />}
+	{text}
+</button>
 
 <style lang="scss">
     button {
@@ -20,12 +30,43 @@ const { text, ...attrs } = Astro.props;
 		border-radius: 2em;
 		font-size: 1em;
 		cursor: pointer;
+		transition: .1s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: .8em;
+
+		.icon {
+			height: 1em;
+			aspect-ratio: 1;
+			scale: 1.2;
+		}
+
+		&.outlined {
+			background-color: transparent;
+			color: black;
+			border: .15em black solid;
+		}
+
+		&:active:hover {
+			scale: .95;
+		}
 	}
 
 	@media (prefers-color-scheme: dark) {
 		button {
 			background-color: white;
 			color: black !important;
+
+			.icon {
+				filter: brightness(0) saturate(100%);
+			}
+
+			&.outlined {
+				background-color: transparent;
+				color: #ffffff !important;
+				border: .15em #ffffff solid;
+			}
 		}
 	}
 </style>

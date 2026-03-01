@@ -1,9 +1,135 @@
 ---
 import Button from "@/components/Button.astro";
+import database from "@/database";
+import { getUsernameByToken } from "@/utils";
+
+const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
+
+if(user == null) {
+    return Astro.redirect("/auth/signin");
+}
+
+const schedules = database.prepare('SELECT * FROM schedules WHERE owner = ?').all(user);
 ---
 
-<h1>Dashboard</h1>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="darkreader-lock" />
+        <title>MySchedule - Dashboard</title>
+    </head>
 
-<a href="/api/auth/logout">
-    <Button type="submit" text="Log out" />
-</a>
+    <body>
+        <header>
+            <span class="title">MySchedule - Dashboard</span>
+
+            <span class="spacer"></span>
+
+            <a href="/schedule/new">
+                <Button text="Create new" icon="/icons/add.svg" />
+            </a>
+
+            <a href="/api/auth/logout">
+                <Button text="Log out" />
+            </a>
+        </header>
+
+        {schedules.length == 0 && <div class="empty">
+            <h1>You don't have any schedules</h1>
+
+            <a href="/schedule/new">
+                <Button text="Create schedule" icon="/icons/add.svg" />
+            </a>
+        </div>}
+
+        <div class="schedules">
+            {schedules.map(schedule => (
+                <a href={`/schedule/${schedule.id}/manage`}>
+                    <div class="schedule">
+                        <span class="name">{schedule.name}</span>
+
+                        <div class="access">
+                            <img src={`/icons/${schedule.public == "true" ? "link" : "lock"}.svg`} />
+
+                            {schedule.public == "true" ? "Public access" : "Private access"}
+                        </div>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </body>
+</html>
+
+<style lang="scss">
+    @use "@/styles/reset";
+	@use "@/styles/colors";
+	@use "@/styles/vars.scss";
+
+    header {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        
+        .spacer {
+            flex-grow: 1;
+        }
+
+        .title {
+            font-weight: 900;
+		    font-size: 2em;
+		    font-variation-settings: "wdth" 125;
+        }
+    }
+
+    .schedules {
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: 1rem;
+    }
+
+    .schedule {
+        border-radius: 1rem;
+        background-color: white;
+        display: flex;
+        gap: .4rem;
+        flex-direction: column;
+        padding-block: .6rem;
+        padding-inline: 1.2rem;
+        
+        .name {
+            color: black;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .access {
+            color: black;
+            font-size: .95em;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+
+            img {
+                height: 1em;
+                aspect-ratio: 1;
+                scale: 1.4;
+                filter: brightness(0) saturate(100%);
+            }
+        }
+    }
+
+    .empty {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        min-height: 60vh;
+    }
+</style>

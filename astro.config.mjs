@@ -25,12 +25,8 @@ export default defineConfig({
 	},
 
 	redirects: {
-		"/schedule": "/"
+		"/schedule": "/dashboard"
 	},
-
-	integrations: [
-		vue()
-	],
 
 	adapter: node({
 		mode: "server"

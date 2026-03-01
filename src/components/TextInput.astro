@@ -21,4 +21,19 @@ const { ...attrs } = Astro.props;
             border: .1em rgb(0, 0, 0) solid;
         }
     }
+
+    @media (prefers-color-scheme: dark) {
+        input {
+            background-color: black;
+            border: .1em #818181 solid;
+
+            &::placeholder {
+                color: #818181;
+            }
+
+            &:focus {
+                border: .1em rgb(255, 255, 255) solid;
+            }
+        }
+    }
 </style>

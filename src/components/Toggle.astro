@@ -1,0 +1,92 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+    name?: string,
+    text?: string
+}
+
+const { 
+    name,
+    text,
+    ...attrs 
+} = Astro.props;
+---
+
+<div class="wrapper" {...attrs}>
+    {text && <span>{text}</span>}
+    <span class="toggle"></span>
+    <input type="checkbox" name={name} />
+</div>
+
+<style lang="scss">
+    @use "@/styles/reset";
+
+    .wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .toggle {
+        position: relative;
+        display: block;
+        width: 2.6em;
+        height: 1.2em;
+        background-color: black;
+        outline: 1px black solid;
+        border-radius: .2em;
+        transition: .2s;
+
+        &::after {
+            content: "";
+            display: block;
+            height: 100%;
+            aspect-ratio: 1;
+            top: 0;
+            left: 0;
+            background-color: white;
+            border-radius: .2em;
+            transition: .2s;
+        }
+    }
+
+    .wrapper:has(input:checked) .toggle {
+        background-color: white;
+
+        &::after {
+            background-color: black;
+            translate: 1.4em;
+        }
+    }
+
+    input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .toggle {
+            background-color: #c8c8c8;
+            outline: 1px white solid;
+
+            &::after {
+                background-color: black;
+            }
+        }
+
+        .wrapper:has(input:checked) .toggle {
+            background-color: black;
+
+            &::after {
+                background-color: white;
+            }
+        }
+    }
+</style>

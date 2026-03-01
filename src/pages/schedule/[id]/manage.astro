@@ -1,11 +1,18 @@
 ---
 import Button from "@/components/Button.astro";
-
-export const prerender = false;
+import database from "@/database";
+import { getUsernameByToken } from "@/utils";
 
 const id = Astro.params.id;
+const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
 
-if(id != "1") {
+if(user == null) {
+    return Astro.redirect("/auth/signin");
+}
+
+const schedule = database.prepare('SELECT * FROM schedules WHERE id = ?').get(id);
+
+if(schedule == null || schedule.owner != user) {
     return Astro.redirect("/404", 404);
 }
 ---
@@ -18,12 +25,16 @@ if(id != "1") {
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
 		<meta name="darkreader-lock" />
-		<title>MySchedule - {id}</title>
+		<title>MySchedule - Manage {schedule.name}</title>
     </head>
 
     <body>
         <header>
-            <span class="title">{id}</span>
+            <a href="/dashboard">
+                <img class="back" src="/icons/back_bold.svg" />
+            </a>
+
+            <span class="title">MySchedule - {schedule.name}</span>
 
             <span class="spacer"></span>
 
@@ -31,6 +42,8 @@ if(id != "1") {
                 <Button text="Log out" />
             </a>
         </header>
+
+        
     </body>
 </html>
 
@@ -42,15 +55,21 @@ if(id != "1") {
         padding: 1rem;
         display: flex;
         align-items: center;
+        gap: 1rem;
         
         .spacer {
             flex-grow: 1;
         }
-    }
 
-    .title {
-        font-weight: 900;
-		font-size: 2em;
-		font-variation-settings: "wdth" 125;
+        .back {
+            height: 2em;
+            aspect-ratio: 1;
+        }
+
+        .title {
+            font-weight: 900;
+		    font-size: 2em;
+		    font-variation-settings: "wdth" 125;
+        }
     }
 </style>

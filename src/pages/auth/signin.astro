@@ -3,19 +3,34 @@ import Button from "@/components/Button.astro";
 import TextInput from "@/components/TextInput.astro";
 ---
 
-<h1>MySchedule</h1>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="darkreader-lock" />
+		<title>MySchedule - Sign in</title>
+    </head>
 
-<form action="/api/auth/signin" method="post">
-    <TextInput id="username" name="username" placeholder="Username/Email" autofocus />
-    <TextInput id="password" name="password" type="password" placeholder="Password" />
+    <body>
+        <h1>MySchedule</h1>
 
-    <Button class="action" type="submit" text="Sign in" />
+        <form action="/api/auth/signin" method="post">
+            <TextInput id="username" name="username" placeholder="Username/Email" autofocus required />
+            <TextInput id="password" name="password" type="password" placeholder="Password" required />
 
-    <a href="/auth/signup" class="hint">Don't have account?</a>
-</form>
+            <Button class="action" type="submit" text="Sign in" />
+        </form>
+
+        <a href="/auth/signup" class="hint">Don't have account?</a>
+    </body>
+</html>
 
 <style lang="scss">
     @use "@/styles/reset";
+    @use "@/styles/colors";
 
     body {
         min-width: 100%;
@@ -52,5 +67,11 @@ import TextInput from "@/components/TextInput.astro";
     .hint {
         color: rgb(78, 78, 78);
         font-size: .9em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .hint {
+            color: rgb(183, 183, 183);
+        }
     }
 </style>

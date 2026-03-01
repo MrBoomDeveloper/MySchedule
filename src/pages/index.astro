@@ -28,7 +28,7 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 				<span class="spacer"></span>
 			
 				{!isLoggedIn && <a href="/auth/signin">
-					<Button class="signin-button" text={i18n.signin} />
+					<Button outlined text={i18n.signin} />
 				</a>}
 			
 				{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
@@ -57,7 +57,7 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 					</a>}
 
 					<a href="https://github.com/MrBoomDeveloper/MySchedule">
-						<Button class="action" text = "Learn more" />
+						<Button class="action" outlined text="Learn more" />
 					</a>
 				</div>
 			</div>
@@ -92,12 +92,6 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 
 		.spacer {
 			flex-grow: 1;
-		}
-
-		.signin-button {
-			background-color: transparent;
-			color: black;
-			border: .15em black solid;
 		}
 	}
 
