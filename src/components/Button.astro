@@ -21,4 +21,11 @@ const { text, ...attrs } = Astro.props;
 		font-size: 1em;
 		cursor: pointer;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		button {
+			background-color: white;
+			color: black !important;
+		}
+	}
 </style>

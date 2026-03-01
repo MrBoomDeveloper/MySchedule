@@ -14,51 +14,80 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="darkreader-lock" />
 		<title>MySchedule</title>
 	</head>
 	<body>
 		<header>
-			<a href="/">
-				<span class="logo">MySchedule</span>
-			</a>
+			<div class="header-content">
+				<a href="/">
+					<span class="logo">MySchedule</span>
+				</a>
 
-			<span class="spacer"></span>
+				<span class="spacer"></span>
 			
-			{!isLoggedIn && <a href="/auth/signin">
-				<Button class="signin-button" text={i18n.signin} />
-			</a>}
+				{!isLoggedIn && <a href="/auth/signin">
+					<Button class="signin-button" text={i18n.signin} />
+				</a>}
 			
-			{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
-				<Button text={i18n.signup} />
-			</a>}
+				{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
+					<Button text={i18n.signup} />
+				</a>}
 
-			{isLoggedIn && <a href="/dashboard">
-				<Button text="Dashboard" />
-			</a>}
+				{isLoggedIn && <a href="/dashboard">
+					<Button text="Dashboard" />
+				</a>}
+			</div>
 		</header>
 
-		<h1 style="margin-bottom: .6rem">{i18n.landing_title}</h1>
+		<div class="landing">
+			<div class="landing-content">
+				<h1>{i18n.landing_title}</h1>
 
-		<a href="https://github.com/MrBoomDeveloper/MySchedule">
-			<Button text = "Learn more..." />
-		</a>
+				<p>Most calendar apps are either too cluttered, don't have a magical permissions system, or are just plain ugly. We made something much better!</p>
+
+				<div class="actions">
+					{!isLoggedIn && <a href="/dashboard">
+						<Button class="action" text="Let's begin" />
+					</a>}
+
+					{isLoggedIn && <a href="/dashboard">
+						<Button class="action" text="Let's begin" />
+					</a>}
+
+					<a href="https://github.com/MrBoomDeveloper/MySchedule">
+						<Button class="action" text = "Learn more" />
+					</a>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
 
 <style lang="scss">
 	@use "@/styles/reset";
+	@use "@/styles/colors";
+	@use "@/styles/vars.scss";
 
 	header {
 		display: flex;
-		align-items: center;
-		width: 100%;
-		padding: 1rem;
-		gap: .6em;
-		font-size: 1em;
+		justify-content: center;
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			max-width: vars.$maxContentWidth;
+			padding: 1rem;
+			gap: .6em;
+			font-size: 1em;
+		}
 
 		.logo {
 			font-weight: 900;
 			font-size: 2em;
+			font-variation-settings: "wdth" 125;
 		}
 
 		.spacer {
@@ -69,6 +98,54 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 			background-color: transparent;
 			color: black;
 			border: .15em black solid;
+		}
+	}
+
+	.landing {
+		display: flex;
+		justify-content: center;
+
+		.landing-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 1rem;
+			width: 100%;
+			max-width: vars.$maxContentWidth;
+			min-height: 60vh;
+			gap: .4rem;
+		}
+
+		h1 {
+			font-size: 2.5em;
+			text-align: center;
+			margin-inline: 1rem;
+			max-width: vars.$maxContentWidth - 400px;
+		}
+
+		p {
+			margin-top: .4rem;
+			margin-bottom: .8rem;
+			text-align: center;
+			line-height: 1.6;
+			font-size: 1.25em;
+			max-width: vars.$maxContentWidth - 400px;
+		}
+
+		.actions {
+			display: flex;
+			gap: .8rem;
+		}
+
+		.action {
+			font-size: 1.1em;
+		}
+	}
+
+	@media (max-width: vars.$mobileBreakpoint) {
+		.landing-content {
+			min-height: 80vh;
 		}
 	}
 </style>
