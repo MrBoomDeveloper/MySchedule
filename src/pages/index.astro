@@ -1,5 +1,6 @@
 ---
-
+export const prerender = false;
+const registrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
 ---
 
 <html lang="en">
@@ -9,9 +10,21 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>MySchedule</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<header>
+			<a href="/auth/login">
+				<button>Login</button>
+			</a>
+			
+			{registrationEnabled && <a href="/auth/signup">
+				<button>Sign up</button>
+			</a>}
+		</header>
+
+		<h1>MySchedule</h1>
+		<p>A brand new way to share your schedule with others :)</p>
+		<a href="https://mrboomdev.ru">Learn more...</a>
 	</body>
 </html>
