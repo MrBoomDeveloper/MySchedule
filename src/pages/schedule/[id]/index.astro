@@ -92,6 +92,13 @@ function getFormattedWeekRange() {
 
             <span class="spacer"></span>
 
+            <div class="search">
+                <img src="/icons/search.svg" />
+                <input placeholder="Search through whole calendar..." />
+            </div>
+
+            <span class="spacer"></span>
+
             {!isLoggedIn && <a href="/auth/signin">
                 <Button text="Sign in" />
             </a>}
@@ -142,6 +149,7 @@ function getFormattedWeekRange() {
 <style lang="scss">
     @use "@/styles/reset";
     @use "@/styles/colors";
+    @use "@/styles/vars";
 
     .spacer {
         flex-grow: 1;
@@ -165,6 +173,36 @@ function getFormattedWeekRange() {
         }
     }
 
+    .search {
+        display: flex;
+        gap: .6rem;
+        align-items: center;
+        background-color: rgb(21, 21, 21);
+        border-radius: 2rem;
+        padding-block: .4rem;
+        padding-left: .8rem;
+        padding-right: 1.4rem;
+        width: 100%;
+        max-width: 25rem;
+
+        img {
+            height: 1.4em;
+            aspect-ratio: 1;
+            filter: brightness(0) saturate(100%) invert(81%) sepia(0%) saturate(367%) hue-rotate(208deg) brightness(93%) contrast(86%);
+        }
+
+        input {
+            flex-grow: 1;
+            border: none;
+            background-color: transparent;
+            font-size: 1em;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
     .actions {
         padding: 1rem;
         display: flex;
@@ -179,6 +217,7 @@ function getFormattedWeekRange() {
     }
 
     .days {
+        overflow: scroll;
         padding: 1rem;
         display: flex;
         gap: 1rem;
@@ -217,6 +256,7 @@ function getFormattedWeekRange() {
         flex-direction: column;
         flex-grow: 1;
         width: 0;
+        min-width: 10rem;
         gap: .25rem;
 
         &:not(.active) {
@@ -244,6 +284,12 @@ function getFormattedWeekRange() {
 
     .day-header + .task {
         border-radius: .75rem .75rem 0 0;
+    }
+
+    @media (max-width: 1100px) {
+        .search {
+            display: none;
+        }
     }
 </style>
 
