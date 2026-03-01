@@ -1,5 +1,6 @@
 ---
 import Button from "@/components/Button.astro";
+import TextInput from "@/components/TextInput.astro";
 
 const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
 
@@ -8,21 +9,53 @@ if(!isRegistrationEnabled) {
 }
 ---
 
-<form action="/api/auth/signup" method="post">
-    <input name="username" placeholder="Username" />
-    <input name="email" type="email" placeholder="Email" />
-    <input name="password" type="password" placeholder="Password" />
+<h1>MySchedule</h1>
 
-    <Button type="submit" text="Sign up" />
+<form action="/api/auth/signup" method="post">
+    <TextInput name="username" placeholder="Username" autofocus />
+    <TextInput name="email" type="email" placeholder="Email" />
+    <TextInput name="password" type="password" placeholder="Password" />
+
+    <Button class="action" type="submit" text="Sign up" />
 </form>
+
+<a href="/auth/signin" class="hint">Already have account?</a>
 
 <style lang="scss">
     @use "@/styles/reset";
 
+    body {
+        min-width: 100%;
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1.4rem;
+    }
+
+    h1 {
+        font-weight: 800;
+        font-size: 2.5em;
+    }
+
     form {
+        width: 100%;
         display: flex;
         flex-direction: column;
-        max-width: 15rem;
+        align-items: center;
+        max-width: 17.5rem;
         gap: .8rem;
+    }
+
+    .action {
+        margin-top: .2rem;
+        width: 100%;
+        padding-block: .8em;
+    }
+
+    .hint {
+        color: rgb(78, 78, 78);
+        font-size: .9em;
     }
 </style>

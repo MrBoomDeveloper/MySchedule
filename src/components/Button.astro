@@ -1,5 +1,5 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"button"> {
     text: string
@@ -19,5 +19,6 @@ const { text, ...attrs } = Astro.props;
 		padding-inline: 1.6em;
 		border-radius: 2em;
 		font-size: 1em;
+		cursor: pointer;
 	}
 </style>
