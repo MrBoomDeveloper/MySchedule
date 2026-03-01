@@ -1,6 +1,7 @@
 ---
 import Button from "@/components/Button.astro";
 import database from "@/database";
+import { useI18n } from "@/i18n/useI18n.astro";
 import { getUsernameByToken } from "@/utils";
 
 export const prerender = false;
@@ -19,14 +20,16 @@ if(schedule == null || (schedule.isPublic == "false" && !canEdit)) {
 
 const tasks = database.prepare('SELECT * FROM tasks WHERE schedule = ?').all(id);
 
+const i18n = useI18n(Astro.preferredLocale);
+
 const dayOfWeekNames = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
+    i18n.monday,
+    i18n.tuesday,
+    i18n.wednesday,
+    i18n.thursday,
+    i18n.friday,
+    i18n.friday,
+    i18n.sunday
 ];
 
 function getFormattedWeekRange() {
@@ -46,7 +49,23 @@ function getFormattedWeekRange() {
     sunday.setDate(monday.getDate() + 6);
 
     // 3. Formatting Helpers
-    const formatMonth = (date: Date) => date.toLocaleString('default', { month: 'long' });
+    const formatMonth = (date: Date) => {
+        switch(date.getMonth()) {
+            case 1: return i18n.january;
+            case 2: return i18n.february;
+            case 3: return i18n.march;
+            case 4: return i18n.april;
+            case 5: return i18n.may;
+            case 6: return i18n.june;
+            case 7: return i18n.july;
+            case 8: return i18n.august;
+            case 9: return i18n.september;
+            case 10: return i18n.october;
+            case 11: return i18n.november;
+            case 12: return i18n.december;
+        }
+    }
+
     const formatYear = (date: Date) => date.getFullYear();
   
     const mDay = monday.getDate();
@@ -94,7 +113,7 @@ function getFormattedWeekRange() {
 
             <div class="search">
                 <img src="/icons/search.svg" />
-                <input placeholder="Search through whole calendar..." />
+                <input placeholder={i18n.search_calendar} />
             </div>
 
             <span class="spacer"></span>
@@ -103,10 +122,10 @@ function getFormattedWeekRange() {
                 <Button text="Sign in" />
             </a>}
 
-            {schedule.public == "true" && <Button icon="/icons/link.svg" text="Share" id="share" />}
+            {schedule.public == "true" && <Button icon="/icons/link.svg" text={i18n.share} id="share" />}
 
             {canEdit && <a href={`/schedule/${schedule.id}/manage`}>
-                <Button icon="/icons/settings.svg" text="Manage" />
+                <Button icon="/icons/settings.svg" text={i18n.manage} />
             </a>}
         </header>
 

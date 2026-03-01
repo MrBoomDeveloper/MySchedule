@@ -6,12 +6,14 @@ export type I18nKey = keyof typeof translations.en;
 type I18nLanguage = keyof typeof translations;
 
 // TODO: Fix this shit, because it only selects english
-export function useI18n(): Record<I18nKey, string> {
-    const locale = JSON.stringify(Astro.preferredLocale) as I18nLanguage;
+export function useI18n(locale: string | undefined): Record<I18nKey, string> {
+    if(locale == null) {
+        return translations["en"];
+    }
 
     return {
         ...translations["en"], 
-        ...translations[locale]
+        ...translations[locale as I18nLanguage]
     }
 }
 ---

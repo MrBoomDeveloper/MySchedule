@@ -1,14 +1,14 @@
 ---
 import Button from "@/components/Button.astro";
 import { useI18n } from "@/i18n/useI18n.astro";
+import Header from "@/layouts/Header.astro";
 import { getUsernameByToken } from "@/utils";
 
-const i18n = useI18n();
-const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+const i18n = useI18n(Astro.preferredLocale);
 const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) != null;
 ---
 
-<html lang="en">
+<html>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -19,45 +19,25 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 		<title>MySchedule</title>
 	</head>
 	<body>
-		<header>
-			<div class="header-content">
-				<a href="/">
-					<span class="logo">MySchedule</span>
-				</a>
-
-				<span class="spacer"></span>
-			
-				{!isLoggedIn && <a href="/auth/signin">
-					<Button outlined text={i18n.signin} />
-				</a>}
-			
-				{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
-					<Button text={i18n.signup} />
-				</a>}
-
-				{isLoggedIn && <a href="/dashboard">
-					<Button text="Dashboard" />
-				</a>}
-			</div>
-		</header>
+		<Header />
 
 		<div class="landing">
 			<div class="landing-content">
 				<h1>{i18n.landing_title}</h1>
 
-				<p>Most calendar apps are either too cluttered, don't have a magical permissions system, or are just plain ugly. We made something much better!</p>
+				<p>{i18n.landing_description}</p>
 
 				<div class="actions">
 					{!isLoggedIn && <a href="/dashboard">
-						<Button class="action" text="Let's begin" />
+						<Button class="action" text={i18n.lets_begin} />
 					</a>}
 
 					{isLoggedIn && <a href="/dashboard">
-						<Button class="action" text="Let's begin" />
+						<Button class="action" text={i18n.lets_begin} />
 					</a>}
 
 					<a href="https://github.com/MrBoomDeveloper/MySchedule">
-						<Button class="action" outlined text="Learn more" />
+						<Button class="action" outlined text={i18n.learn_more} />
 					</a>
 				</div>
 			</div>
@@ -69,31 +49,6 @@ const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) !
 	@use "@/styles/reset";
 	@use "@/styles/colors";
 	@use "@/styles/vars.scss";
-
-	header {
-		display: flex;
-		justify-content: center;
-
-		.header-content {
-			display: flex;
-			align-items: center;
-			width: 100%;
-			max-width: vars.$maxContentWidth;
-			padding: 1rem;
-			gap: .6em;
-			font-size: 1em;
-		}
-
-		.logo {
-			font-weight: 900;
-			font-size: 2em;
-			font-variation-settings: "wdth" 125;
-		}
-
-		.spacer {
-			flex-grow: 1;
-		}
-	}
 
 	.landing {
 		display: flex;

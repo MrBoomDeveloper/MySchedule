@@ -2,6 +2,7 @@
 import Button from "@/components/Button.astro";
 import TextInput from "@/components/TextInput.astro";
 import Toggle from "@/components/Toggle.astro";
+import { useI18n } from "@/i18n/useI18n.astro";
 import { getUsernameByToken } from "@/utils";
 
 const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
@@ -9,6 +10,8 @@ const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
 if(user == null) {
     return Astro.redirect("/auth/signin");
 }
+
+const i18n = useI18n(Astro.preferredLocale);
 ---
 
 <html lang="en">
@@ -19,20 +22,20 @@ if(user == null) {
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
 		<meta name="darkreader-lock" />
-		<title>MySchedule - Create a new schedule</title>
+		<title>MySchedule - {i18n.new_schedule}</title>
     </head>
 
     <body>
-        <h1>New schedule</h1>
+        <h1>{i18n.new_schedule}</h1>
 
         <form action="/api/schedule/create" method="post">
-            <TextInput id="name" name="name" placeholder="Name" autofocus required />
-            <Toggle id="public" name="public" text="Public access (via link)" style="width: 100%; padding-block: .6rem" />
+            <TextInput id="name" name="name" placeholder={i18n.name} autofocus required />
+            <Toggle id="public" name="public" text={i18n.public_access} style="width: 100%; padding-block: .6rem" />
 
-            <Button class="action" type="submit" text="Create" />
+            <Button class="action" type="submit" text={i18n.create} />
         </form>
 
-        <a href="/dashboard" class="hint">Cancel</a>
+        <a href="/dashboard" class="hint">{i18n.cancel}</a>
     </body>
 </html>
 

@@ -1,6 +1,7 @@
 ---
 import Button from "@/components/Button.astro";
 import database from "@/database";
+import { useI18n } from "@/i18n/useI18n.astro";
 import { getUsernameByToken } from "@/utils";
 
 const user = await getUsernameByToken(Astro.cookies.get("token")!!.value);
@@ -10,6 +11,7 @@ if(user == null) {
 }
 
 const schedules = database.prepare('SELECT * FROM schedules WHERE owner = ?').all(user);
+const i18n = useI18n(Astro.preferredLocale);
 ---
 
 <html lang="en">
@@ -25,16 +27,16 @@ const schedules = database.prepare('SELECT * FROM schedules WHERE owner = ?').al
 
     <body>
         <header>
-            <span class="title">MySchedule - Dashboard</span>
+            <span class="title">MySchedule - {i18n.dashboard}</span>
 
             <span class="spacer"></span>
 
             <a href="/schedule/new">
-                <Button text="Create new" icon="/icons/add.svg" />
+                <Button text={i18n.create_new} icon="/icons/add.svg" />
             </a>
 
             <a href="/api/auth/logout">
-                <Button text="Log out" />
+                <Button text={i18n.logout} />
             </a>
         </header>
 
@@ -55,7 +57,7 @@ const schedules = database.prepare('SELECT * FROM schedules WHERE owner = ?').al
                         <div class="access">
                             <img src={`/icons/${schedule.public == "true" ? "link" : "lock"}.svg`} />
 
-                            {schedule.public == "true" ? "Public access" : "Private access"}
+                            {schedule.public == "true" ? i18n.public_access : i18n.private_access}
                         </div>
                     </div>
                 </a>

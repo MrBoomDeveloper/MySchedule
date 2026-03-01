@@ -1,12 +1,15 @@
 ---
 import Button from "@/components/Button.astro";
 import TextInput from "@/components/TextInput.astro";
+import { useI18n } from "@/i18n/useI18n.astro";
 
 const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
 
 if(!isRegistrationEnabled) {
     return Astro.redirect("/")
 }
+
+const i18n = useI18n(Astro.preferredLocale);
 ---
 
 <html lang="en">
@@ -17,21 +20,21 @@ if(!isRegistrationEnabled) {
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
 		<meta name="darkreader-lock" />
-		<title>MySchedule - Sign up</title>
+		<title>MySchedule - {i18n.signup}</title>
     </head>
 
     <body>
         <h1>MySchedule</h1>
 
         <form action="/api/auth/signup" method="post">
-            <TextInput name="username" placeholder="Username" autofocus required />
-            <TextInput name="email" type="email" placeholder="Email" required />
-            <TextInput name="password" type="password" placeholder="Password" required />
+            <TextInput name="username" placeholder={i18n.username} autofocus required />
+            <TextInput name="email" type="email" placeholder={i18n.email} required />
+            <TextInput name="password" type="password" placeholder={i18n.password} required />
 
-            <Button class="action" type="submit" text="Sign up" />
+            <Button class="action" type="submit" text={i18n.signup} />
         </form>
 
-        <a href="/auth/signin" class="hint">Already have account?</a>
+        <a href="/auth/signin" class="hint">{i18n.already_have_account}</a>
     </body>
 </html>
 

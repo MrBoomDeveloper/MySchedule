@@ -1,0 +1,61 @@
+---
+import Button from "@/components/Button.astro";
+import { useI18n } from "@/i18n/useI18n.astro";
+import { getUsernameByToken } from "@/utils";
+
+const i18n = useI18n(Astro.preferredLocale);
+const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
+const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) != null;
+---
+
+<header>
+	<div class="header-content">
+		<a href="/">
+			<span class="logo">MySchedule</span>
+		</a>
+
+		<span class="spacer"></span>
+			
+		{!isLoggedIn && <a href="/auth/signin">
+			<Button outlined text={i18n.signin} />
+		</a>}
+			
+		{isRegistrationEnabled && !isLoggedIn && <a href="/auth/signup">
+			<Button text={i18n.signup} />
+		</a>}
+
+		{isLoggedIn && <a href="/dashboard">
+			<Button text={i18n.dashboard} />
+		</a>}
+	</div>
+</header>
+
+<style lang="scss">
+	@use "@/styles/vars.scss";
+    @use "@/styles/reset";
+
+    header {
+		display: flex;
+		justify-content: center;
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			max-width: vars.$maxContentWidth;
+			padding: 1rem;
+			gap: .6em;
+			font-size: 1em;
+		}
+
+		.logo {
+			font-weight: 900;
+			font-size: 2em;
+			font-variation-settings: "wdth" 125;
+		}
+
+		.spacer {
+			flex-grow: 1;
+		}
+	}
+</style>

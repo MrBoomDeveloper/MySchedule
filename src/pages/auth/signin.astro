@@ -1,6 +1,9 @@
 ---
 import Button from "@/components/Button.astro";
 import TextInput from "@/components/TextInput.astro";
+import { useI18n } from "@/i18n/useI18n.astro";
+
+const i18n = useI18n(Astro.preferredLocale);
 ---
 
 <html lang="en">
@@ -11,20 +14,20 @@ import TextInput from "@/components/TextInput.astro";
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
 		<meta name="darkreader-lock" />
-		<title>MySchedule - Sign in</title>
+		<title>MySchedule - {i18n.signin}</title>
     </head>
 
     <body>
         <h1>MySchedule</h1>
 
         <form action="/api/auth/signin" method="post">
-            <TextInput id="username" name="username" placeholder="Username/Email" autofocus required />
-            <TextInput id="password" name="password" type="password" placeholder="Password" required />
+            <TextInput id="username" name="username" placeholder={i18n.username_email} autofocus required />
+            <TextInput id="password" name="password" type="password" placeholder={i18n.password} required />
 
-            <Button class="action" type="submit" text="Sign in" />
+            <Button class="action" type="submit" text={i18n.signin} />
         </form>
 
-        <a href="/auth/signup" class="hint">Don't have account?</a>
+        <a href="/auth/signup" class="hint">{i18n.dont_have_account}</a>
     </body>
 </html>
 

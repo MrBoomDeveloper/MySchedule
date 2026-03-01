@@ -1,11 +1,78 @@
 ---
+import Button from '@/components/Button.astro';
+import { useI18n } from '@/i18n/useI18n.astro';
+import Header from '@/layouts/Header.astro';
+
 interface Props {
-  error: unknown;
+	error: unknown;
 }
 
 const { error } = Astro.props;
+const i18n = useI18n(Astro.preferredLocale);
 ---
 
-<h1>Error 500</h1>
-<p>Server just crashed :(</p>
-<pre>{error instanceof Error ? error.message : "Unknown error"}</pre>
+<html>
+    <head>
+        <meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="darkreader-lock" />
+		<title>MySchedule - 500</title>
+    </head>
+
+    <body>
+        <Header />
+
+        <div class="error">
+            <div class="error-content">
+                <h1>500</h1>
+                <p>{i18n["500_description"]}</p>
+				<p>{error instanceof Error ? error.message : "Unknown error"}</p>
+
+                <a href="/">
+                    <Button text={i18n.go_to_homepage} />
+                </a>
+            </div>
+        </div>
+    </body>
+</html>
+
+<style lang="scss">
+    @use "@/styles/reset.scss";
+    @use "@/styles/colors.scss";
+    @use "@/styles/vars.scss";
+
+    .error {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .error-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 60vh;
+        padding: 1rem;
+        max-width: vars.$maxContentWidth;
+
+        h1 {
+            font-size: 8em;
+            font-weight: 900;
+            font-variation-settings: "wdth" 125;
+        }
+
+        p {
+			margin-bottom: 1.6rem;
+			text-align: center;
+			line-height: 1.6;
+			font-size: 1.25em;
+			max-width: vars.$maxContentWidth - 400px;
+        }
+    }
+</style>
