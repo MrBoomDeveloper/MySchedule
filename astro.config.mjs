@@ -5,6 +5,10 @@ import vue from "@astrojs/vue";
 import node from "@astrojs/node";
 
 export default defineConfig({
+	redirects: {
+		"/schedule": "/"
+	},
+
 	integrations: [
 		vue()
 	],

@@ -1,0 +1,11 @@
+---
+interface Props {
+  error: unknown;
+}
+
+const { error } = Astro.props;
+---
+
+<h1>Error 500</h1>
+<p>Server just crashed :(</p>
+<pre>{error instanceof Error ? error.message : "Unknown error"}</pre>
