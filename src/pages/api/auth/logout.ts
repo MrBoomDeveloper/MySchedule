@@ -1,6 +1,6 @@
-import type { AstroSharedContext } from "astro";
+import type { APIContext } from "astro";
 
-export async function POST(context: AstroSharedContext) {
-    context.cookies.delete("auth", { path: "/" });
+export async function ALL(context: APIContext) {
+    context.cookies.delete("token", { path: "/" });
     return context.redirect("/");
 }

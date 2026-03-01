@@ -12,7 +12,14 @@
     "@astrojs/node": "^9.5.4",
     "@astrojs/vue": "^5.1.4",
     "astro": "^5.17.1",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.10.0",
+    "jsonwebtoken": "^9.0.3",
     "sass": "^1.97.3",
     "vue": "^3.5.29"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }

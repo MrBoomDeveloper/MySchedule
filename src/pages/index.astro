@@ -1,10 +1,11 @@
 ---
 import Button from "@/components/Button.astro";
 import { useI18n } from "@/i18n/useI18n.astro";
+import { getUsernameByToken } from "@/utils";
 
 const i18n = useI18n();
 const isRegistrationEnabled = import.meta.env.REGISTRATION_ENABLED == "true";
-const isLoggedIn = Astro.cookies.get("auth") != null;
+const isLoggedIn = await getUsernameByToken(Astro.cookies.get("token")?.value) != null;
 ---
 
 <html lang="en">

@@ -1,7 +1,5 @@
-import type { AstroSharedContext } from "astro";
+import type { APIContext } from "astro";
 
-export function DELETE({ params, request }: AstroSharedContext) {
-	return new Response(JSON.stringify({
-		deletedScheduleId: params.id
-	}));
+export function DELETE(context: APIContext) {
+	
 }

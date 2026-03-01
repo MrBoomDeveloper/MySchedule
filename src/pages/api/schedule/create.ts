@@ -1,6 +1,6 @@
-import type { AstroSharedContext } from "astro";
+import type { APIContext, AstroSharedContext } from "astro";
 
-export function POST({ params, request }: AstroSharedContext) {
+export function POST(context: APIContext) {
     return new Response(JSON.stringify({
         message: "Schedule creation isn't implemented yet!"
     }));
