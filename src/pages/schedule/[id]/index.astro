@@ -149,7 +149,10 @@ function getFormattedWeekRange() {
                 <div class="day" class:list={{active: index == currentDayOfWeek}}>
                     <div class="day-header">
                         <span class="day-name">{dayOfWeekNames[index]}</span>
-                        {canEdit && <Button transparent icon="/icons/add.svg" />}
+
+                        {canEdit && <div class="day-add">
+                            <Button transparent icon="/icons/add.svg" />
+                        </div>}
                     </div>
 
                     {[0, 1, 2, 3, 4, 5, 6].map(index => (
@@ -162,6 +165,22 @@ function getFormattedWeekRange() {
                 </div>
             ))}
         </div>
+
+        <div class="panel" id="edit_task_panel">
+            <div class="panel-header">
+                <Button id="panel_close" style="scale: 1.5" transparent icon="/icons/close_bold.svg" />
+                <h1>New task</h1>
+            </div>
+
+            <span class="spacer"></span>
+            
+            <div class="panel-actions">
+                <Button text="Create" id="create" />
+                <Button outlined text="Delete" id="delete" />
+            </div>
+        </div>
+
+        <span id="panel-dim"></span>
     </body>
 </html>
 
@@ -197,7 +216,7 @@ function getFormattedWeekRange() {
         gap: .6rem;
         align-items: center;
         background-color: rgb(21, 21, 21);
-        border-radius: 2rem;
+        border-radius: .5rem;
         padding-block: .4rem;
         padding-left: .8rem;
         padding-right: 1.4rem;
@@ -305,6 +324,66 @@ function getFormattedWeekRange() {
         border-radius: .75rem .75rem 0 0;
     }
 
+    .panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: black;
+        height: 100%;
+        padding-block: 1rem;
+        padding-inline: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        min-width: 25rem;
+        translate: -100% 0;
+        transition: .1s;
+        z-index: 999;
+
+        &.panel-shown {
+            translate: 0 0;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: .2rem;
+        }
+
+        .panel-actions {
+            display: flex;
+            width: 100%;
+            gap: .4rem;
+
+            & > * {
+                flex-grow: 1;
+                width: 0;
+            }
+        }
+    }
+
+    #panel-dim {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        opacity: 0;
+        pointer-events: none;
+        transition: .1s;
+    }
+
+    .panel-shown + #panel-dim {
+        opacity: 1;
+        pointer-events: inherit;
+    }
+
+    .spacer {
+        flex-grow: 1;
+    }
+
     @media (max-width: 1100px) {
         .search {
             display: none;
@@ -313,8 +392,24 @@ function getFormattedWeekRange() {
 </style>
 
 <script>
+    const panel = document.getElementById("edit_task_panel")!!;
+
+    document.getElementById("panel_close")!!.addEventListener("click", () => {
+        panel.classList.remove("panel-shown");
+    });
+
+    document.getElementById("panel-dim")!!.addEventListener("click", () => {
+        panel.classList.remove("panel-shown");
+    });
+
     document.getElementById("share")?.addEventListener("click", () => {
         navigator.clipboard.writeText(window.location.href);
         alert("Copied to clipboard!");
+    });
+
+    document.querySelectorAll(".day").forEach((dayElement, index) => {
+        dayElement.querySelector(".day-add")!!.addEventListener("click", () => {
+            panel.classList.add("panel-shown");
+        });
     });
 </script>
